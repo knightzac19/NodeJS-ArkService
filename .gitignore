@@ -1,0 +1,6 @@
+*.crt
+*.key
+*.csr
+*.sqlite
+node_modules
+settings.json

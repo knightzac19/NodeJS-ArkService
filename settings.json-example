@@ -1,0 +1,14 @@
+{
+	"daemon_mode": false,
+    "server_config": {
+        "host": "localhost",
+        "port": 8081,
+		"use_ajax": true,
+		"allowed_server": "http://localhost",
+		"ark_path": "C:\\Steam\\steamapps\\common\\ARK\\ShooterGame"
+    },
+    "api_settings": {
+        "secret": "<CHANGEME>",
+        "hash_type": "sha256"
+    }
+}

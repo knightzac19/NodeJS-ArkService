@@ -39,7 +39,6 @@ function checkHash(key, res, cb) {
         if (d === false) {
             res.statusMessage = "Invalid API Key!";
             res.status(400).end();
-            cb(false);
         } else {
             cb(true);
         }

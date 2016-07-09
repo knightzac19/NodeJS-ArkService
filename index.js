@@ -104,7 +104,7 @@ player.setupPlayers(function() {
             });
         });
 
-        app.post('/getChat', (req, res) => {
+        app.post('/getChat', jsonParser, (req, res) => {
             checkHash(req.body.api_key, res, function(c) {
                 arkserver.getChat(function(d) {
                     res.json({

@@ -28,9 +28,115 @@ Change **YOUR KEY** to anything you want, but don't forget what you put there. C
 
 All api calls (unless otherwise noted) must be encoded as **application/json** and be a valid JSON call.
 
-**/getServerData**
+**getServerData**
 
 ```
 POST: {api_key: YOURKEY}
 RETURNS: {d:{mods:[],map:'',maxplayers:0}}
+```
+
+**getChat**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {chat:[]}
+```
+
+**listOnline**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {players:[]}
+```
+
+
+**saveWorld**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {text:'World Saved'}
+```
+
+**destroyDinos**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {text:'Wild Dinos Destroyed'}
+```
+
+**command**
+
+```
+POST: {api_key: YOURKEY, cmd: RCONCOMMAND}
+RETURNS: {result:''}
+```
+
+**broadcast**
+
+```
+POST: {api_key: YOURKEY, msg: YOURMESSAGE}
+RETURNS: {chat:'[ALL] YOURMESSAGE'}
+```
+
+**listTribes**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {d:[
+{"Id":1234567890,
+"Name":"",
+"OwnerId":123456789,
+"FileCreated":"2016-07-04 17:15:34",
+"FileUpdated":"2016-07-09 15:10:33"}
+]}
+```
+
+**listPlayers**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {d:[
+{"Id":132456789,
+"TribeId":123456789,
+"Level":50,
+"Engrams":1000,
+"SteamId":"1234156748974",
+"Admin":null,
+"CharacterName":"",
+"SteamName":"",
+"ProfileUrl":"http://steamcommunity.com/id/",
+"AvatarUrl":"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+"CommunityBanned":0,
+"VACBanned":0,
+"NumberOfVACBans":0,
+"NumberOfGameBans":0,
+"DaysSinceLastBan":0,
+"FileUpdated":"2016-07-09 15:10:33",
+"FileCreated":"2016-07-04 17:15:34"}
+]}
+```
+
+**getPlayer**
+
+```
+POST: {api_key: YOURKEY, id: STEAMID}
+RETURNS: {d:
+{"Id":132456789,
+"TribeId":123456789,
+"Level":50,
+"Engrams":1000,
+"SteamId":"1234156748974",
+"Admin":null,
+"CharacterName":"",
+"SteamName":"",
+"ProfileUrl":"http://steamcommunity.com/id/",
+"AvatarUrl":"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+"CommunityBanned":0,
+"VACBanned":0,
+"NumberOfVACBans":0,
+"NumberOfGameBans":0,
+"DaysSinceLastBan":0,
+"FileUpdated":"2016-07-09 15:10:33",
+"FileCreated":"2016-07-04 17:15:34"}
+}
 ```

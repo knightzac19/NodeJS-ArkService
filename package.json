@@ -1,27 +1,46 @@
 {
-  "name": "ark-query-tool",
-  "version": "1.0.1",
-  "description": " NodeJS Web Service that lets you load all the data from your ARK server Asynchronously.",
-  "main": "index.js",
-  "dependencies": {
-    "arkdata": "git+https://github.com/knightzac19/NodeJS-ArkData.git",
-    "bluebird": "^3.4.1",
-    "body-parser": "^1.15.2",
-    "chunk": "0.0.2",
-    "daemon": "^1.1.0",
-    "express": "^4.14.0",
-    "inireader": "git+https://github.com/Ajnasz/IniReader.git",
-    "sourcequery": "git+https://github.com/DoctorMcKay/SourceQuery.git",
-    "sprintf": "^0.1.5",
-    "sprintf-js": "^1.0.3",
-    "sqlite3": "^3.1.4",
-    "srcds-rcon": "git+https://github.com/knightzac19/node-srcds-rcon.git#hanging-connection-fix",
-    "steam-webapi": "^0.6.5"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Zachary Knight",
-  "license": "GPL-3.0"
+    "name": "ark-query-tool",
+    "url": "https://github.com/knightzac19/NodeJS-ArkService",
+    "keywords": [
+        "ark",
+        "sourcequery",
+        "steam",
+        "api"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/knightzac19/NodeJS-ArkService.git"
+    },
+    "bugs": {
+        "url": "https://github.com/knightzac19/NodeJS-ArkService/issues"
+    },
+    "version": "1.0.2",
+    "description": " NodeJS Web Service that lets you load all the data from your ARK server Asynchronously.",
+    "main": "index.js",
+    "dependencies": {
+        "arkdata": "^1.0.3",
+        "bluebird": "^3.4.1",
+        "body-parser": "^1.15.2",
+        "chunk": "0.0.2",
+        "daemon": "^1.1.0",
+        "express": "^4.14.0",
+        "inireader": "^1.0.0",
+        "sourcequery": "git+https://github.com/DoctorMcKay/SourceQuery.git",
+        "sprintf": "^0.1.5",
+        "sprintf-js": "^1.0.3",
+        "sqlite3": "^3.1.4",
+        "srcds-rcon": "git+https://github.com/knightzac19/node-srcds-rcon.git#hanging-connection-fix",
+        "steam-webapi": "^0.6.5"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": {
+        "name": "Zachary Knight",
+        "email": "knightzac@gmail.com"
+    },
+    "contributors": [
+        "Zachary Knight <knightzac@gmail.com>"
+    ],
+    "license": "GPL-3.0"
 }

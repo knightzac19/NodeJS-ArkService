@@ -2,6 +2,38 @@
 
 This repository houses a NodeJS Web Service that lets you load all the data from your ARK server Asynchronously. The nodejs server must be on the same server that houses your ARK server in order for this to function properly. You also will need to open up the port you specify in the settings.json to the outside world.
 
+## Install
+
+```
+npm install ark-query-tool
+```
+
+Inside your **index.js** just put the following,
+```
+require('ark-query-tool');
+```
+There's no functions that need to be run, it will start the server up from there.
+
+
+**Do not run the server until you complete the setup below! If you happen to run it before hand, you will encounter several errors. It will generate a corrupt sqlite file and you should just delete it before continuing.**
+
+Then just run **node index.js** and you should something like see this,
+```
+Player DB....
+Loading MOD, map, and maxplayers from SourceQuery...
+Save Done...
+Loading Steam...
+SourceQuery is Finished...
+Caching Steam Info...
+Profiles are done updating!
+Bans are done updating!
+Time to start:  2s
+Tribes....
+Ark Query Server Up At http://:::8081
+```
+
+You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.
+
 
 ## Setup
 

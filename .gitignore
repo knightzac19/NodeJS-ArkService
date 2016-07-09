@@ -4,3 +4,4 @@
 *.sqlite
 node_modules
 settings.json
+api_keys.sql

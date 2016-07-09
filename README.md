@@ -1,6 +1,6 @@
 # NodeJS-ArkService
 
-This repository houses a NodeJS Web Service that lets you load all the data from your ARK server Asynchronously.
+This repository houses a NodeJS Web Service that lets you load all the data from your ARK server Asynchronously. The nodejs server must be on the same server that houses your ARK server in order for this to function properly. You also will need to open up the port you specify in the settings.json to the outside world.
 
 
 ## Setup

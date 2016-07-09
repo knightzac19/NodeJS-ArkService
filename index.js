@@ -1,4 +1,6 @@
 /*jshint esversion: 6 */
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.cached.Database('./players.sqlite');
 var arkdata = require('arkdata');
 var player = arkdata.player;
 var tribe = arkdata.tribe;
@@ -7,8 +9,8 @@ var playerModel = require("./lib/playermodel.js");
 var tribeModel = require("./lib/tribemodel.js");
 var authModel = require("./lib/authmodel.js");
 var arkserver = require("./lib/server.js");
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.cached.Database('./players.sqlite');
+
+
 var https = require('https');
 var express = require('express');
 var app = express();

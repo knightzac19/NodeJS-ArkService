@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
-var player = require("./lib/playercache.js");
-var tribe = require("./lib/tribecache.js");
+var arkdata = require('arkdata');
+var player = arkdata.player;
+var tribe = arkdata.tribe;
 var fs = require('fs');
 var playerModel = require("./lib/playermodel.js");
 var tribeModel = require("./lib/tribemodel.js");
@@ -26,13 +27,11 @@ if (settings.daemon_mode === true) {
 }
 const api_settings = settings.api_settings;
 const server_settings = settings.server_config;
-// app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({
-    extended: false
-})); // support encoded
+
 
 function checkHash(key, res, cb) {
     //.update('sdblas%ew5@trast')
+
     var hash = crypto.createHmac(api_settings.hash_type, api_settings.secret)
         .update(key)
         .digest('hex');
@@ -84,6 +83,8 @@ player.setupPlayers(function() {
               steamid: '76561198041798116',
               notetitle: 'ARK-ALARM: 07/04 @ 23:06 on Local Server, ALARM IN \'The Southern Islets\' WAS TRIPPED!',
               message: '...' }*/
+			  // create application/json parser
+  			var jsonParser = bodyParser.json();
             app.post('/arkServerMessage', (req, res) => {
                 console.log("Message");
                 checkHash(req.body.key, res, function(c) {
@@ -94,7 +95,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/getServerData', (req, res) => {
+            app.post('/getServerData', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     res.json(arkserver.getSQData());
                 });
@@ -110,7 +111,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/listOnline', (req, res) => {
+            app.post('/listOnline', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     arkserver.listOnline(function(d) {
                         res.json({
@@ -120,7 +121,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/saveWorld', (req, res) => {
+            app.post('/saveWorld', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     arkserver.saveWorld(function(d) {
                         res.json({
@@ -130,7 +131,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/destroyDinos', (req, res) => {
+            app.post('/destroyDinos', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     arkserver.destroyWildDinos(function(d) {
                         res.json({
@@ -140,7 +141,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/command', (req, res) => {
+            app.post('/command', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     arkserver.runCommand(req.body.cmd, function(d) {
                         if (d === undefined || d === null || d === "") {
@@ -153,7 +154,7 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/broadcast', (req, res) => {
+            app.post('/broadcast', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     arkserver.broadcast(req.body.msg, function() {
                         res.json({
@@ -163,23 +164,24 @@ player.setupPlayers(function() {
                 });
             });
 
-            app.post('/listTribes', (req, res) => {
+            app.post('/listTribes', jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     tribeModel.listTribes(function(d) {
-                        res.json(JSON.stringify(d));
+                        res.json({d:d});
                     });
                 });
             });
 
-            app.post('/listPlayers', (req, res) => {
+
+            app.post('/listPlayers',jsonParser, (req, res) => {
                 checkHash(req.body.api_key, res, function(c) {
                     playerModel.listPlayers(function(d) {
-                        res.json(d);
+                        res.json({d:d});
                     });
                 });
             });
 
-            app.post('/getPlayer', function(req, res) {
+            app.post('/getPlayer', jsonParser, function(req, res) {
                 checkHash(req.body.api_key, res, function(c) {
                     if (req.body.id === undefined) {
                         res.statusMessage = "Invalid ID!";
@@ -191,13 +193,16 @@ player.setupPlayers(function() {
                                 res.status(400).end();
                                 // res.status(500).end(throwReqError("Player Not Found!"));
                             } else {
-                                res.json(JSON.stringify(d));
+                                res.json({d:d});
                             }
                         });
                     }
                 });
             });
-
+			app.use(bodyParser.json()); // support json encoded bodies
+			app.use(bodyParser.urlencoded({
+			    extended: true
+			})); // support encoded
             var server = app.listen({
                     host: server_settings.host,
                     port: server_settings.port

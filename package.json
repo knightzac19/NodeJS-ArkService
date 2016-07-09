@@ -1,9 +1,10 @@
 {
-  "name": "arkdata",
+  "name": "ark-query-tool",
   "version": "0.0.8",
-  "description": "A nodejs arkdata tool.",
+  "description": "A nodejs ark tool.",
   "main": "index.js",
   "dependencies": {
+    "arkdata": "git+https://git.practicalit.info/zknight/NodeJS-ArkData.git",
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "chunk": "0.0.2",

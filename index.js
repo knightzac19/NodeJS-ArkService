@@ -99,9 +99,12 @@ player.setupPlayers(function() {
 
         app.post('/getServerData', jsonParser, (req, res) => {
             checkHash(req.body.api_key, res, function(c) {
-                res.json({
-                    d: arkserver.getSQData()
-                });
+				 arkserver.getSQData(function(v){
+					 res.json({
+	                     d:v
+	                 });
+				 });
+
             });
         });
 

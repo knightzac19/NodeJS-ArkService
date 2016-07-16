@@ -11,7 +11,7 @@
         "port": 8081,
 		"use_ajax": true,
 		"allowed_server": "http://localhost",
-		"ark_path": "C:\\Steam\\steamapps\\common\\ARK\\ShooterGame",
+		"ark_path": "C:\\Steam\\steamapps\\common\\ARK",
 		"steam_key": "YOURSTEAMKEY"
     },
     "api_settings": {

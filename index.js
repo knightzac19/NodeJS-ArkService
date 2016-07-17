@@ -65,23 +65,23 @@ try {
     process.exit(1);
 }
 
-if(Object.keys(defaultSettings).length == Object.keys(settings).length && Object.keys(defaultSettings.sourcequery).length == Object.keys(settings.sourcequery).length && Object.keys(defaultSettings.server_config).length == Object.keys(settings.server_config).length && Object.keys(defaultSettings.api_settings).length == Object.keys(settings.api_settings).length) {
-	console.log("Config verification finished!");
+if (Object.keys(defaultSettings).length == Object.keys(settings).length && Object.keys(defaultSettings.sourcequery).length == Object.keys(settings.sourcequery).length && Object.keys(defaultSettings.server_config).length == Object.keys(settings.server_config).length && Object.keys(defaultSettings.api_settings).length == Object.keys(settings.api_settings).length) {
+    console.log("Config verification finished!");
 } else {
-	if (!settings.server_config.cache_refresh) {
-		settings.server_config.cache_refresh = 1800000;
-		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-	}
-	if (!settings.server_config.host) {
-		settings.server_config.host = null;
-		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-	}
-	if (!settings.server_config.port) {
-		settings.server_config.port = 8081;
-		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-	}
-	console.error("ERROR: Config verification failed. Please ensure all options are there.");
-	process.exit(1);
+    if (!settings.server_config.cache_refresh) {
+        settings.server_config.cache_refresh = 1800000;
+        fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+    }
+    if (!settings.server_config.host) {
+        settings.server_config.host = null;
+        fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+    }
+    if (!settings.server_config.port) {
+        settings.server_config.port = 8081;
+        fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+    }
+    console.error("ERROR: Config verification failed. Please ensure all options are there.");
+    process.exit(1);
 }
 Object.freeze(settings);
 try {
@@ -240,9 +240,16 @@ player.setupPlayers(function() {
             });
         });
 
-        app.post('/listTribes', jsonParser, (req, res) => {
+        app.post('/listTribes/:style', jsonParser, (req, res) => {
             checkHash(req.body.api_key, res, function(c) {
-                tribeModel.listTribes(function(d) {
+                var array = false;
+                if (req.params.style === "true") {
+                    array = true;
+                }
+
+                tribeModel.listTribes({
+                    array: array
+                }, function(d) {
                     res.json({
                         d: d
                     });

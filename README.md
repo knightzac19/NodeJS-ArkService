@@ -110,7 +110,7 @@ POST: {api_key: YOURKEY, msg: YOURMESSAGE}
 RETURNS: {chat:'[ALL] YOURMESSAGE'}
 ```
 
-**listTribes**
+**listTribes/true**
 
 ```
 POST: {api_key: YOURKEY}
@@ -121,6 +121,22 @@ RETURNS: {d:[
 "FileCreated":"2016-07-04 17:15:34",
 "FileUpdated":"2016-07-09 15:10:33"}
 ]}
+```
+
+**listTribes/false**
+
+```
+POST: {api_key: YOURKEY}
+RETURNS: {
+	d:{
+		1234567890:
+			{"Id":1234567890,
+			"Name":"",
+			"OwnerId":123456789,
+			"FileCreated":"2016-07-04 17:15:34",
+			"FileUpdated":"2016-07-09 15:10:33"}
+			}
+		}
 ```
 
 **listPlayers**

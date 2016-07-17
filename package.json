@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/knightzac19/NodeJS-ArkService/issues"
   },
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": " NodeJS Web Service that lets you load all the data from your ARK server Asynchronously.",
   "main": "index.js",
   "dependencies": {

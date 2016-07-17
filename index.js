@@ -51,6 +51,14 @@ function checkHash(key, res, cb) {
 
 player.setupPlayers(function() {
     tribe.setupTribes(function() {
+        //default is 30 minutes to refresh
+        setInterval(function() {
+            player.setupPlayers(function() {
+                tribe.setupTribes(function() {
+					console.log("Player/Tribe Data refreshed!");
+				});
+            });
+        }, server_settings.cache_refresh);
 
         // tribeModel.getTribeMembers(1023269468, function(d) {
         //     console.log(d);
@@ -99,11 +107,11 @@ player.setupPlayers(function() {
 
         app.post('/getServerData', jsonParser, (req, res) => {
             checkHash(req.body.api_key, res, function(c) {
-				 arkserver.getSQData(function(v){
-					 res.json({
-	                     d:v
-	                 });
-				 });
+                arkserver.getSQData(function(v) {
+                    res.json({
+                        d: v
+                    });
+                });
 
             });
         });
@@ -201,6 +209,47 @@ player.setupPlayers(function() {
                     playerModel.getPlayer(req.body.id, function(d) {
                         if (d === undefined) {
                             res.statusMessage = "Player Not Found!";
+                            res.status(400).end();
+                            // res.status(500).end(throwReqError("Player Not Found!"));
+                        } else {
+                            res.json({
+                                d: d
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+		app.post('/getTribe', jsonParser, function(req, res) {
+            checkHash(req.body.api_key, res, function(c) {
+                if (req.body.id === undefined) {
+                    res.statusMessage = "Invalid ID!";
+                    res.status(400).end();
+                } else {
+                    tribeModel.getTribe(req.body.id, function(d) {
+                        if (d === undefined) {
+                            res.statusMessage = "Tribe Not Found!";
+                            res.status(400).end();
+                        } else {
+                            res.json({
+                                d: d
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+		app.post('/getTribeMembers', jsonParser, function(req, res) {
+            checkHash(req.body.api_key, res, function(c) {
+                if (req.body.id === undefined) {
+                    res.statusMessage = "Invalid ID!";
+                    res.status(400).end();
+                } else {
+                    tribeModel.getTribe(req.body.id, function(d) {
+                        if (d === undefined) {
+                            res.statusMessage = "Tribe Not Found!";
                             res.status(400).end();
                             // res.status(500).end(throwReqError("Player Not Found!"));
                         } else {

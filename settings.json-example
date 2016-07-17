@@ -12,7 +12,8 @@
 		"use_ajax": true,
 		"allowed_server": "http://localhost",
 		"ark_path": "C:\\Steam\\steamapps\\common\\ARK",
-		"steam_key": "YOURSTEAMKEY"
+		"steam_key": "YOURSTEAMKEY",
+		"cache_refresh" : 1800000
     },
     "api_settings": {
         "secret": "<CHANGEME>",

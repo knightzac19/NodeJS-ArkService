@@ -51,14 +51,18 @@ function checkHash(key, res, cb) {
 
 player.setupPlayers(function() {
     tribe.setupTribes(function() {
-        //default is 30 minutes to refresh
-        setInterval(function() {
-            player.setupPlayers(function() {
-                tribe.setupTribes(function() {
-					console.log("Player/Tribe Data refreshed!");
-				});
-            });
+        setTimeout(function() {
+            //default is 30 minutes to refresh
+            setInterval(function() {
+                console.log("Refreshing Cache");
+                player.setupPlayers(function() {
+                    tribe.setupTribes(function() {
+                        console.log("Player/Tribe Data refreshed!");
+                    });
+                });
+            }, server_settings.cache_refresh);
         }, server_settings.cache_refresh);
+
 
         // tribeModel.getTribeMembers(1023269468, function(d) {
         //     console.log(d);
@@ -221,7 +225,7 @@ player.setupPlayers(function() {
             });
         });
 
-		app.post('/getTribe', jsonParser, function(req, res) {
+        app.post('/getTribe', jsonParser, function(req, res) {
             checkHash(req.body.api_key, res, function(c) {
                 if (req.body.id === undefined) {
                     res.statusMessage = "Invalid ID!";
@@ -241,7 +245,7 @@ player.setupPlayers(function() {
             });
         });
 
-		app.post('/getTribeMembers', jsonParser, function(req, res) {
+        app.post('/getTribeMembers', jsonParser, function(req, res) {
             checkHash(req.body.api_key, res, function(c) {
                 if (req.body.id === undefined) {
                     res.statusMessage = "Invalid ID!";

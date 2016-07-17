@@ -68,6 +68,18 @@ try {
 if(Object.keys(defaultSettings).length == Object.keys(settings).length && Object.keys(defaultSettings.sourcequery).length == Object.keys(settings.sourcequery).length && Object.keys(defaultSettings.server_config).length == Object.keys(settings.server_config).length && Object.keys(defaultSettings.api_settings).length == Object.keys(settings.api_settings).length) {
 	console.log("Config verification finished!");
 } else {
+	if (!settings.server_config.cache_refresh) {
+		settings.server_config.cache_refresh = 1800000;
+		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+	}
+	if (!settings.server_config.host) {
+		settings.server_config.host = null;
+		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+	}
+	if (!settings.server_config.port) {
+		settings.server_config.port = 8081;
+		fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
+	}
 	console.error("ERROR: Config verification failed. Please ensure all options are there.");
 	process.exit(1);
 }
@@ -85,12 +97,8 @@ if (settings.daemon_mode === true) {
 }
 const api_settings = settings.api_settings;
 const server_settings = settings.server_config;
-
-if (!settings)
-    defaultSettings.forEach(elem => {
-
-    });
-
+Object.freeze(api_settings);
+Object.freeze(server_settings);
 
 var arkdata = require('arkdata');
 var player = arkdata.player;
@@ -102,23 +110,6 @@ var arkserver = require("./lib/server.js");
 
 player.setupPlayers(function() {
     tribe.setupTribes(function() {
-        if (!server_settings.cache_refresh) {
-            settings.server_config.cache_refresh = 1800000;
-            fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-        }
-        if (!server_settings.host) {
-            settings.server_config.host = null;
-            fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-        }
-        if (!server_settings.port) {
-            settings.server_config.port = 8081;
-            fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-        }
-        if (!server_settings.use_ajax) {
-            settings.server_config.use_ajax = true;
-            fs.writeFileSync('./settings.json', JSON.stringify(settings, null, 4));
-        }
-
         //default is 30 minutes to refresh
         setInterval(function() {
             console.log("Refreshing Cache");

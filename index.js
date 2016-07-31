@@ -107,19 +107,28 @@ var playerModel = require("./lib/playermodel.js");
 var tribeModel = require("./lib/tribemodel.js");
 var authModel = require("./lib/authmodel.js");
 var arkserver = require("./lib/server.js");
+var cacheInt;
+var refreshing = true;
+
+function refreshCache() {
+	if(refreshing === true) {
+		return false;
+	}
+	refreshing = true;
+	console.log("Refreshing Cache");
+	player.setupPlayers(function() {
+		tribe.setupTribes(function() {
+			refreshing = false;
+			console.log("Player/Tribe Data refreshed!");
+		});
+	});
+}
 
 player.setupPlayers(function() {
     tribe.setupTribes(function() {
         //default is 30 minutes to refresh
-        setInterval(function() {
-            console.log("Refreshing Cache");
-            player.setupPlayers(function() {
-                tribe.setupTribes(function() {
-                    console.log("Player/Tribe Data refreshed!");
-                });
-            });
-        }, server_settings.cache_refresh);
-
+		cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
+		refreshing = false;
 
         // tribeModel.getTribeMembers(1023269468, function(d) {
         //     console.log(d);
@@ -284,6 +293,27 @@ player.setupPlayers(function() {
                                 d: d
                             });
                         }
+                    });
+                }
+            });
+        });
+
+        app.post('/forceRefreshCache', jsonParser, function(req, res) {
+            checkHash(req.body.api_key, res, function(c) {
+                if (refreshing === true) {
+                    res.statusMessage = "Cache currently refreshing. Please try again later!";
+                    res.status(400).end();
+                } else {
+					clearInterval(cacheInt);
+                    refreshing = true;
+                    player.setupPlayers(function() {
+                        tribe.setupTribes(function() {
+							cacheInt = setInterval(refreshCache(), server_settings.cache_refresh);
+                            refreshing = false;
+                            res.json({
+                                text: "Cache Refreshed"
+                            });
+                        });
                     });
                 }
             });

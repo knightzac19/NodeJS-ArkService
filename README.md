@@ -19,15 +19,14 @@ There's no functions that need to be run, it will start the server up from there
 
 Then just run **node index.js** and you should something like see this,
 ```
+Config verification finished!
 Player DB....
-Loading MOD, map, and maxplayers from SourceQuery...
 Save Done...
 Loading Steam...
-SourceQuery is Finished...
 Caching Steam Info...
 Profiles are done updating!
 Bans are done updating!
-Time to start:  2s
+Time to start:  4s
 Tribes....
 Ark Query Server Up At http://:::8081
 ```
@@ -37,23 +36,11 @@ You can also just clone this repo and run **npm install** and then run **node in
 
 ## Setup
 
-First you need to copy settings.json-example to settings.json and edit everything inside. Make sure nothing says **CHANGEME** when you are done. Also make note of your secret as you'll need it to setup your api key.
+First you need to copy settings.json-example to settings.json and edit everything inside OR just run the module once and it will generate a settings.json for you that you can modify. Make sure nothing says **CHANGEME** when you are done. Also make note of your secret as you'll need it to setup your api key.
 
 ### API Key
 
-There's currently no way to add your api key using the service yet, you'll have to open the sqlite file up in a sqlite browser and add the key yourself.
-
-To generate a key, in nodejs run the following,
-
-```
-var key = 'YOUR KEY';
-var hash = crypto.createHmac('sha256', 'YOURSECRET')
-	.update(key)
-	.digest('hex');
-console.log(hash);
-```
-
-Change **YOUR KEY** to anything you want, but don't forget what you put there. Change YOURSECRET to what you have in your settings.json file. Then take what it outputs and put it into your sqlite database.
+Your api key will be outputted to you in your console and log file the first time you run the module. If you forget to save the api key, just delete your player.sqlite and let it regen the cache.
 
 
 ## API Calls

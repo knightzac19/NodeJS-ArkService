@@ -110,16 +110,23 @@ var arkserver = require("./lib/server.js");
 var cacheInt;
 var refreshing = true;
 
-function refreshCache() {
+function refreshCache(cb) {
 	if(refreshing === true) {
 		return false;
 	}
 	refreshing = true;
-	console.log("Refreshing Cache");
-	player.setupPlayers(function() {
-		tribe.setupTribes(function() {
+	player.setupPlayers(function(e) {
+		var er;
+		if(e !== undefined) {
+			er = e;
+		}
+		tribe.setupTribes(function(e) {
+			if(e !== undefined)  {
+				er = er + " | "+ e;
+			}
 			refreshing = false;
 			console.log("Player/Tribe Data refreshed!");
+			cb(er);
 		});
 	});
 }
@@ -305,16 +312,17 @@ player.setupPlayers(function() {
                     res.status(400).end();
                 } else {
 					clearInterval(cacheInt);
-                    refreshing = true;
-                    player.setupPlayers(function() {
-                        tribe.setupTribes(function() {
-							cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
-                            refreshing = false;
-                            res.json({
-                                text: "Cache Refreshed"
-                            });
-                        });
-                    });
+					refreshCache(function(e){
+						var err = '';
+						if(e !== undefined && e !== false) {
+							err = " | Error Occured:"+ e;
+						}
+						refreshing = false;
+						cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
+						res.json({
+							text: "Cache Refreshed" + err
+						});
+					});
                 }
             });
         });

@@ -14,22 +14,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 const crypto = require('crypto');
 
-function checkHash(key, res, cb) {
-    //.update('sdblas%ew5@trast')
 
-    var hash = crypto.createHmac(api_settings.hash_type, api_settings.secret)
-        .update(key)
-        .digest('hex');
-    authModel.getKey(hash, function(d) {
-        if (d === false) {
-            res.statusMessage = "Invalid API Key!";
-            res.status(400).end();
-        } else {
-            cb(true);
-        }
-    });
-    // return false;
-}
 var defaultSettings = {
     "daemon_mode": false,
     "log_console": false,
@@ -113,6 +98,7 @@ if (settings.log_console === true) {
     console.error = console.log;
 }
 
+var authModel = require("./lib/authmodel.js");
 
 if (settings.daemon_mode === true) {
     require('daemon')();
@@ -121,13 +107,28 @@ const api_settings = settings.api_settings;
 const server_settings = settings.server_config;
 Object.freeze(api_settings);
 Object.freeze(server_settings);
+function checkHash(key, res, cb) {
+    //.update('sdblas%ew5@trast')
 
+    var hash = crypto.createHmac(api_settings.hash_type, api_settings.secret)
+        .update(key)
+        .digest('hex');
+    authModel.getKey(hash, function(d) {
+        if (d === false) {
+            res.statusMessage = "Invalid API Key!";
+            res.status(400).end();
+        } else {
+            cb(true);
+        }
+    });
+    // return false;
+}
 var arkdata = require('arkdata');
 var player = arkdata.player;
 var tribe = arkdata.tribe;
 var playerModel = require("./lib/playermodel.js");
 var tribeModel = require("./lib/tribemodel.js");
-var authModel = require("./lib/authmodel.js");
+
 var arkserver = require("./lib/server.js");
 var cacheInt;
 var refreshing = true;

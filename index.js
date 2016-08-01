@@ -308,7 +308,7 @@ player.setupPlayers(function() {
                     refreshing = true;
                     player.setupPlayers(function() {
                         tribe.setupTribes(function() {
-							cacheInt = setInterval(refreshCache(), server_settings.cache_refresh);
+							cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
                             refreshing = false;
                             res.json({
                                 text: "Cache Refreshed"

@@ -95,12 +95,12 @@ try {
 
 if (settings.log_console === true) {
     try {
-        var old_file = fs.accessSync("console_log.txt", fs.F_OK);
-        fs.renameSync("console_log.txt", "console_log.old.txt");
+        var old_file = fs.accessSync("./console_log.txt", fs.F_OK);
+        fs.renameSync("./console_log.txt", "./console_log.old.txt");
     }
     //we don't care if this errors out!
     catch (e) {}
-    var logFile = fs.createWriteStream('console_log.txt', {
+    var logFile = fs.createWriteStream('./console_log.txt', {
         flags: 'w'
     });
     // Or 'w' to truncate the file every time the process starts.

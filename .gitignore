@@ -5,3 +5,4 @@
 node_modules
 settings.json
 api_keys.sql
+console_log*

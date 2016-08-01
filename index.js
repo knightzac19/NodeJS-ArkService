@@ -3,6 +3,7 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.cached.Database('./players.sqlite');
 var fs = require('fs');
 var https = require('https');
+var util = require('util');
 var express = require('express');
 var app = express();
 var options = {
@@ -31,6 +32,7 @@ function checkHash(key, res, cb) {
 }
 var defaultSettings = {
     "daemon_mode": false,
+    "log_console": false,
     "sourcequery": {
         "host": "<CHANGEME>",
         "port": 27015,
@@ -91,6 +93,26 @@ try {
     process.exit(1);
 }
 
+if (settings.log_console === true) {
+    try {
+        var old_file = fs.accessSync("console_log.txt", fs.F_OK);
+        fs.renameSync("console_log.txt", "console_log.old.txt");
+    }
+    //we don't care if this errors out!
+    catch (e) {}
+    var logFile = fs.createWriteStream('console_log.txt', {
+        flags: 'w'
+    });
+    // Or 'w' to truncate the file every time the process starts.
+    var logStdout = process.stdout;
+
+    console.log = function() {
+        logFile.write(util.format.apply(null, arguments) + '\n');
+        logStdout.write(util.format.apply(null, arguments) + '\n');
+    };
+    console.error = console.log;
+}
+
 
 if (settings.daemon_mode === true) {
     require('daemon')();
@@ -111,31 +133,31 @@ var cacheInt;
 var refreshing = true;
 
 function refreshCache(cb) {
-	if(refreshing === true) {
-		return false;
-	}
-	refreshing = true;
-	player.setupPlayers(function(e) {
-		var er;
-		if(e !== undefined) {
-			er = e;
-		}
-		tribe.setupTribes(function(e) {
-			if(e !== undefined)  {
-				er = er + " | "+ e;
-			}
-			refreshing = false;
-			console.log("Player/Tribe Data refreshed!");
-			cb(er);
-		});
-	});
+    if (refreshing === true) {
+        return false;
+    }
+    refreshing = true;
+    player.setupPlayers(function(e) {
+        var er;
+        if (e !== undefined) {
+            er = e;
+        }
+        tribe.setupTribes(function(e) {
+            if (e !== undefined) {
+                er = er + " | " + e;
+            }
+            refreshing = false;
+            console.log("Player/Tribe Data refreshed!");
+            cb(er);
+        });
+    });
 }
 
 player.setupPlayers(function() {
     tribe.setupTribes(function() {
         //default is 30 minutes to refresh
-		cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
-		refreshing = false;
+        cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
+        refreshing = false;
 
         // tribeModel.getTribeMembers(1023269468, function(d) {
         //     console.log(d);
@@ -311,18 +333,18 @@ player.setupPlayers(function() {
                     res.statusMessage = "Cache currently refreshing. Please try again later!";
                     res.status(400).end();
                 } else {
-					clearInterval(cacheInt);
-					refreshCache(function(e){
-						var err = '';
-						if(e !== undefined && e !== false) {
-							err = " | Error Occured:"+ e;
-						}
-						refreshing = false;
-						cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
-						res.json({
-							text: "Cache Refreshed" + err
-						});
-					});
+                    clearInterval(cacheInt);
+                    refreshCache(function(e) {
+                        var err = '';
+                        if (e !== undefined && e !== false) {
+                            err = " | Error Occured:" + e;
+                        }
+                        refreshing = false;
+                        cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
+                        res.json({
+                            text: "Cache Refreshed" + err
+                        });
+                    });
                 }
             });
         });

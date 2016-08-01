@@ -1,5 +1,6 @@
 {
 	"daemon_mode": false,
+	"log_console": false,
 	"sourcequery": {
         "host": "<CHANGEME>",
         "port": 27015,

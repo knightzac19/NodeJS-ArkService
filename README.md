@@ -15,7 +15,7 @@ require('ark-query-tool');
 There's no functions that need to be run, it will start the server up from there.
 
 
-**Do not run the server until you complete the setup below! If you happen to run it before hand, you will encounter several errors. It will generate a corrupt sqlite file and you should just delete it before continuing.**
+~~**Do not run the server until you complete the setup below! If you happen to run it before hand, you will encounter several errors. It will generate a corrupt sqlite file and you should just delete it before continuing.**~~ This is no longer an issue, the module should prevent **most** configuration errors on launch now.
 
 Then just run **node index.js** and you should something like see this,
 ```

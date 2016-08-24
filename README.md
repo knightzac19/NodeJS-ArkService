@@ -13,12 +13,21 @@ Inside your **index.js** just put the following,
 var arkquery = require('ark-query-tool');
 arkquery.startServer();
 ```
-There's no functions that need to be run, it will start the server up from there.
+
+### Standalone
+If you don't want to use this as an external module, clone this repo, run **npm install** and then **node index.js start**.
 
 
-~~**Do not run the server until you complete the setup below! If you happen to run it before hand, you will encounter several errors. It will generate a corrupt sqlite file and you should just delete it before continuing.**~~ This is no longer an issue, the module should prevent **most** configuration errors on launch now.
+## Setup
 
-Then just run **node index.js** and you should something like see this,
+First you need to copy settings.json-example to settings.json and edit everything inside OR just run the module once and it will generate a settings.json for you that you can modify. Make sure nothing says **CHANGEME** when you are done. Also make note of your secret as you'll need it to setup your api key.
+
+### API Key
+
+Your api key will be outputted to you in your console and log file the first time you run the module. If you forget to save the api key, just delete your player.sqlite and let it regen the cache.
+
+## Result
+After running **node index.js**, your output should be similiar to this.
 ```
 Config verification finished!
 Player DB....
@@ -29,17 +38,6 @@ Time to start:  2s
 Setting up Tribes...
 Ark Query Server Up At http://:::8081
 ```
-
-~~You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.~~ I've converted the module to be an exported module now, if you wish to run it standalone, run **node index.js start** and it should start as per usual.
-
-
-## Setup
-
-First you need to copy settings.json-example to settings.json and edit everything inside OR just run the module once and it will generate a settings.json for you that you can modify. Make sure nothing says **CHANGEME** when you are done. Also make note of your secret as you'll need it to setup your api key.
-
-### API Key
-
-Your api key will be outputted to you in your console and log file the first time you run the module. If you forget to save the api key, just delete your player.sqlite and let it regen the cache.
 
 ## Settings
 

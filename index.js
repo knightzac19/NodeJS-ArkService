@@ -127,7 +127,7 @@ module.exports.startServer = function() {
 }
 
 
-//module.exports.startServer();
+//module.exports.startServer(); 
 function throwReqError(msg) {
     return JSON.stringify({
         error: msg

@@ -80,8 +80,8 @@ try {
 
 if (settings.log_console === true) {
     try {
-        var old_file = fs.accessSync(path.join(path.dirname(require.main.filename),"console_log.txt"), fs.F_OK);
-        fs.renameSync(path.join(path.dirname(require.main.filename),"console_log.txt"), "./console_log.old.txt");
+        var old_file = fs.accessSync(path.join(path.dirname(require.main.filename), "console_log.txt"), fs.F_OK);
+        fs.renameSync(path.join(path.dirname(require.main.filename), "console_log.txt"), "./console_log.old.txt");
     }
     //we don't care if this errors out!
     catch (e) {}
@@ -107,6 +107,7 @@ const api_settings = settings.api_settings;
 const server_settings = settings.server_config;
 Object.freeze(api_settings);
 Object.freeze(server_settings);
+
 function checkHash(key, res, cb) {
     //.update('sdblas%ew5@trast')
 
@@ -126,10 +127,7 @@ function checkHash(key, res, cb) {
 var arkdata = require('arkdata');
 var player = arkdata.player;
 var tribe = arkdata.tribe;
-var playerModel = require("./lib/playermodel.js");
-var tribeModel = require("./lib/tribemodel.js");
-
-var arkserver = require("./lib/server.js");
+var routes = require("./lib/routes.js");
 var cacheInt;
 var refreshing = true;
 
@@ -154,18 +152,8 @@ function refreshCache(cb) {
     });
 }
 
-player.setupPlayers(function() {
-    tribe.setupTribes(function() {
-        //default is 30 minutes to refresh
-        cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
-        refreshing = false;
-
-        // tribeModel.getTribeMembers(1023269468, function(d) {
-        //     console.log(d);
-        // });
-
-        //You must have a valid SSL cert to use this
-        //PHP can be set to ignore the self-signed-cert
+function setupAccessControl() {
+    return new Promise((r, rj) => {
         if (server_settings.use_ajax) {
             app.use(function(req, res, next) {
 
@@ -187,209 +175,43 @@ player.setupPlayers(function() {
                 next();
             });
         }
-
+        r();
+    });
+}
+module.exports.startServer = function() {
+	player.setupPlayers()
+    .then(() => tribe.setupTribes())
+    .then(() => setupAccessControl())
+    .then(() => {
+        //default is 30 minutes to refresh
+        cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
+        refreshing = false;
         /*{ key: 'T50hwb8Q67K56cNEdGsFTo',
           steamid: '76561198041798116',
           notetitle: 'ARK-ALARM: 07/04 @ 23:06 on Local Server, ALARM IN \'The Southern Islets\' WAS TRIPPED!',
           message: '...' }*/
         // create application/json parser
-        // This currently doesn't do anything...
         var jsonParser = bodyParser.json();
-        app.post('/arkServerMessage', (req, res) => {
-            console.log("Message");
-            checkHash(req.body.key, res, function(c) {
-                // console.log(req.body.key,req.body.steamid,req.body.notetitle,req.body.message);
-                console.log(req.body);
-                res.end("Goodbye!");
-                // res.json(arkserver.getSQData());
-            });
-        });
-
-        app.post('/getServerData', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.getSQData(function(v) {
-                    res.json({
-                        d: v
-                    });
-                });
-
-            });
-        });
-
-        app.post('/getChat', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.getChat(function(d) {
-                    res.json({
-                        "chat": d.split("\n")
-                    });
-                });
-            });
-        });
-
-        app.post('/listOnline', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.listOnline(function(d) {
-                    res.json({
-                        "players": d.split("\n")
-                    });
-                });
-            });
-        });
-
-        app.post('/saveWorld', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.saveWorld(function(d) {
-                    res.json({
-                        text: "World Saved!"
-                    });
-                });
-            });
-        });
-
-        app.post('/destroyDinos', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.destroyWildDinos(function(d) {
-                    res.json({
-                        text: "Wild Dinos Destroyed!"
-                    });
-                });
-            });
-        });
-
-        app.post('/command', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.runCommand(req.body.cmd, function(d) {
-                    if (d === undefined || d === null || d === "") {
-                        d = "No Response From Server";
-                    }
-                    res.json({
-                        result: d
-                    });
-                });
-            });
-        });
-
-        app.post('/broadcast', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                arkserver.broadcast(req.body.msg, function() {
-                    res.json({
-                        chat: "[ALL] " + msg
-                    });
-                });
-            });
-        });
-
-        app.post('/listTribes/:style', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                var array = false;
-                if (req.params.style === "true") {
-                    array = true;
+        for (let [key, value] of entries(routes.getRoutes())) {
+            if (value.type !== undefined) {
+                if (value.keyName === undefined) {
+                    value.keyName = "api_key";
                 }
-
-                tribeModel.listTribes({
-                    array: array
-                }, function(d) {
-                    res.json({
-                        d: d
+                if (value.parse === false) {
+                    app.post('/' + key, (req, res) => {
+                        checkHash(req.body[value.keyName], res, function(c) {
+                            value.run(req, res);
+                        });
                     });
-                });
-            });
-        });
-
-
-        app.post('/listPlayers', jsonParser, (req, res) => {
-            checkHash(req.body.api_key, res, function(c) {
-                playerModel.listPlayers(function(d) {
-                    res.json({
-                        d: d
-                    });
-                });
-            });
-        });
-
-        app.post('/getPlayer', jsonParser, function(req, res) {
-            checkHash(req.body.api_key, res, function(c) {
-                if (req.body.id === undefined) {
-                    res.statusMessage = "Invalid ID!";
-                    res.status(400).end();
                 } else {
-                    playerModel.getPlayer(req.body.id, function(d) {
-                        if (d === undefined) {
-                            res.statusMessage = "Player Not Found!";
-                            res.status(400).end();
-                            // res.status(500).end(throwReqError("Player Not Found!"));
-                        } else {
-                            res.json({
-                                d: d
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-        app.post('/forceRefreshCache', jsonParser, function(req, res) {
-            checkHash(req.body.api_key, res, function(c) {
-                if (refreshing === true) {
-                    res.statusMessage = "Cache currently refreshing. Please try again later!";
-                    res.status(400).end();
-                } else {
-                    clearInterval(cacheInt);
-                    refreshCache(function(e) {
-                        var err = '';
-                        if (e !== undefined && e !== false) {
-                            err = " | Error Occured:" + e;
-                        }
-                        refreshing = false;
-                        cacheInt = setInterval(refreshCache, server_settings.cache_refresh);
-                        res.json({
-                            text: "Cache Refreshed" + err
+                    app.post('/' + key, jsonParser, (req, res) => {
+                        checkHash(req.body[value.keyName], res, function(c) {
+                            value.run(req, res);
                         });
                     });
                 }
-            });
-        });
-
-        app.post('/getTribe', jsonParser, function(req, res) {
-            checkHash(req.body.api_key, res, function(c) {
-                if (req.body.id === undefined) {
-                    res.statusMessage = "Invalid ID!";
-                    res.status(400).end();
-                } else {
-                    tribeModel.getTribe(req.body.id, function(d) {
-                        if (d === undefined) {
-                            res.statusMessage = "Tribe Not Found!";
-                            res.status(400).end();
-                        } else {
-                            res.json({
-                                d: d
-                            });
-                        }
-                    });
-                }
-            });
-        });
-
-        app.post('/getTribeMembers', jsonParser, function(req, res) {
-            checkHash(req.body.api_key, res, function(c) {
-                if (req.body.id === undefined) {
-                    res.statusMessage = "Invalid ID!";
-                    res.status(400).end();
-                } else {
-                    tribeModel.getTribe(req.body.id, function(d) {
-                        if (d === undefined) {
-                            res.statusMessage = "Tribe Not Found!";
-                            res.status(400).end();
-                            // res.status(500).end(throwReqError("Player Not Found!"));
-                        } else {
-                            res.json({
-                                d: d
-                            });
-                        }
-                    });
-                }
-            });
-        });
+            }
+        }
         app.use(bodyParser.json()); // support json encoded bodies
         app.use(bodyParser.urlencoded({
             extended: true
@@ -410,18 +232,24 @@ player.setupPlayers(function() {
         // }).on("error", function(err) {
         //     console.log(err);
         // });
+
     });
-    // playerModel.getPlayer("76561197960539228",function(d){
-    // 	console.log(d);
-    // });
-    // playerModel.listPlayers({name:"steamid",value:"76561197960539228"},function(d){
-    // 	console.log(d);
-    // });
-});
+}
 
 
+//module.exports.startServer();
 function throwReqError(msg) {
     return JSON.stringify({
         error: msg
     });
+}
+
+
+function* entries(obj) {
+    if (obj === undefined) {
+        yield false;
+    }
+    for (let key of Object.keys(obj)) {
+        yield [key, obj[key]];
+    }
 }

@@ -10,7 +10,8 @@ npm install ark-query-tool
 
 Inside your **index.js** just put the following,
 ```
-require('ark-query-tool');
+var arkquery = require('ark-query-tool');
+arkquery.startServer();
 ```
 There's no functions that need to be run, it will start the server up from there.
 
@@ -21,17 +22,15 @@ Then just run **node index.js** and you should something like see this,
 ```
 Config verification finished!
 Player DB....
-Save Done...
-Loading Steam...
 Caching Steam Info...
 Profiles are done updating!
-Bans are done updating!
-Time to start:  4s
-Tribes....
+Steam bans are done updating!
+Time to start:  2s
+Setting up Tribes...
 Ark Query Server Up At http://:::8081
 ```
 
-You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.
+~~You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.~~ I've converted the module to be an exported module now, you can no longer just "run" this by itself. Granted if you feel the need to, you can just call the startServer() function inside of index after you clone and it should in theory run the same.
 
 
 ## Setup
@@ -42,10 +41,35 @@ First you need to copy settings.json-example to settings.json and edit everythin
 
 Your api key will be outputted to you in your console and log file the first time you run the module. If you forget to save the api key, just delete your player.sqlite and let it regen the cache.
 
+## Settings
+
+### daemon_mode
+
+This tells the module to load as a daemon and not as blocking process. Please note you will not see any errors/output with this enabled.
+**Default**: false
+
+### log_console
+Enables logging to a file named console.txt. There will be a backup log called console.old.txt that will be created on launch.
+**Default**: false
+
+### sourcequery.host
+
+Hostname/IP of your ARK server.
+**Default**: "your.ark.server"
+
+### sourcequery.port
+
+Port your ARK serve uses
+**Default**: 27015
 
 ## API Calls
 
 All api calls (unless otherwise noted) must be encoded as **application/json** and be a valid JSON call.
+
+For Example:
+```
+jQuery.post({url:"http://localhost:8081/listOnline",data:JSON.stringify({api_key:"YOUR_KEY"}),success:function(d){console.log(d);},contentType:"application/json"});
+```
 
 **getServerData**
 

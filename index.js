@@ -3,7 +3,7 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.cached.Database('./players.sqlite');
 var fs = require('fs');
 var https = require('https');
-
+var start = Date.now();
 var express = require('express');
 var app = express();
 var options = {
@@ -110,6 +110,7 @@ module.exports.startServer = function() {
             host: server_settings.host,
             port: server_settings.port
         }, function() {
+			console.log("Time to start: ", (Math.round(Date.now() - start)  / 1000) + "s");
             console.log("Ark Query Server Up At http://%s:%s", server.address().address, server_settings.port);
         });
         // var server = http.createServer(app).listen({
@@ -124,10 +125,11 @@ module.exports.startServer = function() {
         // });
 
     });
+};
+if(process.argv.length === 3 && process.argv[2] === "start"){
+	module.exports.startServer();
 }
 
-
-//module.exports.startServer(); 
 function throwReqError(msg) {
     return JSON.stringify({
         error: msg

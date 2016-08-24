@@ -30,7 +30,7 @@ Setting up Tribes...
 Ark Query Server Up At http://:::8081
 ```
 
-~~You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.~~ I've converted the module to be an exported module now, you can no longer just "run" this by itself. Granted if you feel the need to, you can just call the startServer() function inside of index after you clone and it should in theory run the same.
+~~You can also just clone this repo and run **npm install** and then run **node index.js** and you will get the same result.~~ I've converted the module to be an exported module now, if you wish to run it standalone, run **node index.js start** and it should start as per usual.
 
 
 ## Setup

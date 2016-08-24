@@ -69,6 +69,11 @@ All api calls (unless otherwise noted) must be encoded as **application/json** a
 For Example:
 ```
 jQuery.post({url:"http://localhost:8081/listOnline",data:JSON.stringify({api_key:"YOUR_KEY"}),success:function(d){console.log(d);},contentType:"application/json"});
+
+//outputs
+{
+	players: ["","first_player","second_player",""]
+}
 ```
 
 **getServerData**

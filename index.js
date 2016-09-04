@@ -87,6 +87,9 @@ module.exports.startServer = function() {
                 if (value.keyName === undefined) {
                     value.keyName = "api_key";
                 }
+				if(value.altPath !== undefined) {
+					key = value.altPath;
+				}
                 if (value.parse === false) {
                     app.post('/' + key, (req, res) => {
                         checkHash(req.body[value.keyName], res, function(c) {

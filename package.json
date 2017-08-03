@@ -18,7 +18,7 @@
   "description": " NodeJS Web Service that lets you load all the data from your ARK server Asynchronously.",
   "main": "index.js",
   "dependencies": {
-    "arkdata": "^1.0.29",
+    "arkdata": "^1.0.31",
     "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "chunk": "0.0.2",
